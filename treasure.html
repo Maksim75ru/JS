@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Найди клад</title>
+  </head>
+  <body>
+    <h1 id="heading">Найди клад</h1>
+
+    <img
+      id="map"
+      width="800"
+      height="800"
+      src="http://nostarch.com/images/treasuremap.png"
+    />
+
+    <p id="distance"></p>
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+
+    <script>
+      //Получения случайных чисел от 0 до size
+      var getRandomNumber = function (size) {
+        return Math.floor(Math.random() * size);
+      };
+
+      //Вычисляем расстояние от клика до клада
+      var getDistance = function (event, target) {
+        var diffX = event.offsetX - target.x; //event.offsetX это свойство хранит координаты клика по Х; diffX хранит горизонтальное расстояние между кликом и кладом
+        var diffY = event.offsetY - target.y;
+        return Math.sqrt(diffX * diffX + diffY * diffY); // Это теорема Пифагора. Math.sqrt это квадратный корень
+      };
+
+      var getDistanceHint = function (distance) {
+        if (distance < 10) {
+          return "Обожжешься!";
+        } else if (distance < 20) {
+          return "Очень горячо";
+        } else if (distance < 40) {
+          return "Горячо";
+        } else if (distance < 80) {
+          return "Тепло";
+        } else if (distance < 160) {
+          return "Холодно";
+        } else if (distance < 320) {
+          return "Очень холодно";
+        } else if (distance < 450) {
+          return "Очень-очень холодно";
+        } else {
+          return "Замерзаешь";
+        }
+      };
+
+      //Задаем коориданы клада
+      var width = 400;
+      var height = 400;
+      //Подсчет кликов
+      var clicks = 0;
+
+      //Ввожу переменную которая считает ограничение кликов
+      var ogr = 50;
+      //Случайная позиция клада
+      var target = {
+        x: getRandomNumber(width),
+        y: getRandomNumber(height),
+      };
+
+      //Обработчик кликов
+      $("#map").click(function (event) {
+        clicks++; //Клики увеличиваются
+        //Следующий код вычислит расстояние, получит нужную строку с сообщением и отобразит эту строку
+        var distance = getDistance(event, target);
+        var distanceHint = getDistanceHint(distance);
+        $("#distance").text(distanceHint);
+
+        //Проверка на выйгрыш
+        if (distance < 8) {
+          alert("Клад найден! Сделано кликов: " + clicks);
+        }
+
+        if (clicks > ogr) {
+          alert("Конец игры!");
+        }
+        ogr--; //Клики увеличиваются, а ограничеие уменьшается
+        if (distance < 160) {
+          alert("Осталось " + ogr + " кликов");
+        } else if (distance < 40) {
+          alert("Осталось " + ogr + " кликов");
+        }
+      });
+    </script>
+  </body>
+</html>
